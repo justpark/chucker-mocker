@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:backgroundTint="@color/chucker_chessboard_odd_square_light">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_editing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Editing response for search/api/headers/lol" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_response_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_editing"
+        android:text="@string/chucker_edit_response_code_title" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_response_code"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/title_response_code"
+        app:layout_constraintTop_toBottomOf="@id/title_editing"
+        app:layout_constraintBottom_toBottomOf="@id/title_response_code"
+        android:inputType="number"
+        tools:ignore="LabelFor" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_response_json"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_response_code"
+        android:text="@string/chucker_title_response_body_json" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_response_body"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_response_json"
+        app:layout_constraintBottom_toTopOf="@id/remove_mock_response"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="LabelFor" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/remove_mock_response"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/chucker_remove_mock_response" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/make_mock_response"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/chucker_add_mock_response" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

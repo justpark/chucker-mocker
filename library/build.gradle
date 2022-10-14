@@ -1,0 +1,135 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'maven-publish' // Apply this plugin at the top of your library build.gradle
+
+def githubProperties = new Properties()
+githubProperties.load(new FileInputStream(rootProject.file("local.properties"))) //Set env variable GPR_USER & GPR_API_KEY if not adding a properties file
+
+def getArtificatId = { ->
+    return "library" // Replace with library name ID
+}
+
+publishing {
+    publications {
+        bar(MavenPublication) {
+            groupId 'com.justpark.chuckermocker' // Replace with group ID
+            artifactId getArtificatId()
+            version VERSION_NAME
+            artifact("$buildDir/outputs/aar/${getArtificatId()}-debug.aar")
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.api.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+
+            url = uri("https://maven.pkg.github.com/justpark/chucker-mocker")
+            credentials {
+                username githubProperties.getProperty('GPR_USER')
+                password githubProperties.getProperty('GPR_KEY1')
+            }
+        }
+    }
+
+}
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += [
+            '-module-name', "com.github.justpark.chucker-mocker.library",
+            "-Xexplicit-api=strict"
+        ]
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
+        // We don't want to impose RTL on consuming applications.
+        disable 'RtlEnabled'
+        // Don't fail build if some dependencies outdated
+        disable 'GradleDependency'
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            all {
+                useJUnitPlatform()
+            }
+        }
+    }
+
+    resourcePrefix 'chucker_'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    implementation "com.google.android.material:material:$materialComponentsVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "androidx.palette:palette-ktx:$paletteKtxVersion"
+
+    implementation "androidx.activity:activity-ktx:$activityVersion"
+    implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+
+    implementation "com.google.code.gson:gson:$gsonVersion"
+
+    api platform("com.squareup.okhttp3:okhttp-bom:$okhttpVersion")
+    api "com.squareup.okhttp3:okhttp"
+    testImplementation "com.squareup.okhttp3:mockwebserver"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "junit:junit:$vintageJunitVersion"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$vintageJunitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "androidx.test:core:$androidxTestCoreVersion"
+    testImplementation "androidx.arch.core:core-testing:$androidXCoreVersion"
+    testImplementation "com.google.truth:truth:$truthVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
