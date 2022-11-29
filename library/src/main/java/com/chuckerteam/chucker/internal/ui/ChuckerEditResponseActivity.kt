@@ -35,7 +35,18 @@ internal class ChuckerEditResponseActivity : AppCompatActivity() {
 
         viewModel.transaction.observe(this, Observer { transaction ->
             binding.editResponseCode.setText(transaction?.responseCode.toString())
-            binding.editResponseBody.setText(transaction?.responseBody ?: "no body found")
+            val text = transaction?.responseBody?.let {
+                try {
+                    val jsonObject = JSONObject(it)
+                    jsonObject.toString(4)
+                } catch (exception: JSONException) {
+                    it
+                }
+
+            }?: run {
+                "no body found"
+            }
+            binding.editResponseBody.setText(text)
 
             val shortPath = getPathWithoutQueryParams(transaction?.path ?: "")
 

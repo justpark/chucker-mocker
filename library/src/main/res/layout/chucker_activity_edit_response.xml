@@ -43,19 +43,28 @@
         app:layout_constraintTop_toBottomOf="@id/edit_response_code"
         android:text="@string/chucker_title_response_body_json" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/edit_response_body"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:inputType="textMultiLine"
-        android:gravity="top"
-        android:scrollHorizontally="false"
-        android:scrollbars="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_response_json"
         app:layout_constraintBottom_toTopOf="@id/remove_mock_response"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="LabelFor" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_response_json"
+        tools:ignore="LabelFor">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_response_body"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="monospace"
+            android:gravity="top"
+            android:textSize="14sp"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"
+            android:scrollHorizontally="false" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/remove_mock_response"
