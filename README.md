@@ -7,6 +7,7 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
   <img src="assets/ic_launcher-web.png" alt="chucker icon" width="30%"/>
 </p>
 
+* To publish navigate to project dir and run ./gradlew :library:publish
 * [Getting Started](#getting-started-)
 * [Features](#features-)
   * [Multi-Window](#multi-window-)
