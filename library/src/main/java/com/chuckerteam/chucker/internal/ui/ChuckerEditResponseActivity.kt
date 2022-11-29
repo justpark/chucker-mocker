@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.json.JSONTokener
 
 internal class ChuckerEditResponseActivity : AppCompatActivity() {
 
@@ -35,7 +36,22 @@ internal class ChuckerEditResponseActivity : AppCompatActivity() {
 
         viewModel.transaction.observe(this, Observer { transaction ->
             binding.editResponseCode.setText(transaction?.responseCode.toString())
-            binding.editResponseBody.setText(transaction?.responseBody ?: "no body found")
+            val text = transaction?.responseBody?.let {
+                 when (JSONTokener(it).nextValue()) {
+                    is JSONObject -> {
+                        val jsonObject = JSONObject(it)
+                        jsonObject.toString(4)
+                    }
+                    is JSONArray -> {
+                        val jsonArray = JSONArray(it)
+                        jsonArray.toString(4)
+                    }
+                    else -> it
+                }
+            }?: run {
+                "no body found"
+            }
+            binding.editResponseBody.setText(text)
 
             val shortPath = getPathWithoutQueryParams(transaction?.path ?: "")
 

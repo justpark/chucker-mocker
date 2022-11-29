@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
             StrictMode.VmPolicy.Builder()
                 .detectLeakedClosableObjects()
                 .penaltyLog()
-                .penaltyDeath()
                 .build()
         )
     }
