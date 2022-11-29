@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Telephony.BaseMmsColumns.TRANSACTION_ID
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -18,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.json.JSONTokener
 
 internal class ChuckerEditResponseActivity : AppCompatActivity() {
 
@@ -36,13 +38,17 @@ internal class ChuckerEditResponseActivity : AppCompatActivity() {
         viewModel.transaction.observe(this, Observer { transaction ->
             binding.editResponseCode.setText(transaction?.responseCode.toString())
             val text = transaction?.responseBody?.let {
-                try {
-                    val jsonObject = JSONObject(it)
-                    jsonObject.toString(4)
-                } catch (exception: JSONException) {
-                    it
+                 when (JSONTokener(it).nextValue()) {
+                    is JSONObject -> {
+                        val jsonObject = JSONObject(it)
+                        jsonObject.toString(4)
+                    }
+                    is JSONArray -> {
+                        val jsonArray = JSONArray(it)
+                        jsonArray.toString(4)
+                    }
+                    else -> it
                 }
-
             }?: run {
                 "no body found"
             }
